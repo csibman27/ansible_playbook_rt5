@@ -1,0 +1,3 @@
+# change inventory for the required vm to load keys to
+
+ansible-playbook -i inventory site.yml

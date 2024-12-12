@@ -1,0 +1,29 @@
+---
+- hosts: service
+  become: true
+  roles:
+  #- role: ig_addkeys
+  #- role: ig_add_backups_user
+  #- role: ig_chrony
+  #- role: ig_logrotate
+  #- thulium_drake.request_tracker
+  - ansible-role-request_tracker
+
+
+#- hosts: cloud-vms
+#  become: true
+#  roles:
+#  - role: ig_addkeys
+
+#- hosts: physical-box
+#  become: true
+#  gather_facts: false
+#  roles:
+#  - role: ig_addkeys
+
+#- hosts: physical-box-sysadmin
+#  remote_user: "{{ sysadmin_system_user }}"
+#  become: true
+#  gather_facts: false
+#  roles:
+#  - role: ig_addkeys

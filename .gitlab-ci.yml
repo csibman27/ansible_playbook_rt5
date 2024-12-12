@@ -1,0 +1,15 @@
+image: ubuntu:xenial
+
+before_script:
+  - apt -y update
+  - apt install -y python python-pip python-cryptography libffi-dev libssl-dev
+  - pip install pipenv
+  - pipenv install --dev --skip-lock
+
+stages:
+  - lint
+
+job1:
+  stage: lint
+  script:
+    pipenv run ansible-lint site.yml
