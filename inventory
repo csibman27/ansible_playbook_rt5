@@ -2,26 +2,5 @@
 localhost
 
 [service]
-#87.44.17.86
-#87.44.17.164
-#87.44.17.47
-#10.37.25.110
-#87.44.17.151
-#10.37.25.43
-#10.37.92.211
-#87.44.17.107
-#lcmanager.walton remote_user=ubuntu
-#87.44.17.95
 87.44.17.248
-
-#[cloud-vms]
-#netbox.walton
-#lcmanager.waltoninstitute.ie
-
-#[physical-box]
-#k20m-2.tssg.org
-
-#[physical-box-sysadmin]
-#maas.inf.tssg.org 
-#nagios.tssg.org 
 
