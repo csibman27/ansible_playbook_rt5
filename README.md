@@ -1,6 +1,8 @@
 # Ansible playbook and role for installing rt5
 
-The following is a playbook for test_playbook. 
+The following is a playbook for test_playbook.
+
+The playbook is tested on Debian 11, Debian 12 
 
 ## How to Use
 
@@ -76,7 +78,8 @@ add below code as content.
 ### Run
 
 - After playbook is done
-  * Goto /opt/rt5 and run 'sudo sbin/rt-setup-database --action=init' // this will initialize the database and creates user defined in RT_SiteConfig.pm
+  * Goto /opt/rt5 and run ***'sudo sbin/rt-setup-database --action=init'*** // this will initialize the database and creates user defined in RT_SiteConfig.pm
+- Full text search is disabled in your RT configuration.  Run ***"sudo /opt/rt5/sbin/rt-setup-fulltext-index" to enable it.***
 - The application can be run with starman, that would require an extra package to install
 - `` cpanm --sudo Plack::Handler::Starman ``
 - Command to run the newly installed rt5
