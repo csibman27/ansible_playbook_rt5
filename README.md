@@ -75,15 +75,19 @@ add below code as content.
 
 ```
 
-### Run
+### How to run RT5
 
-- After playbook is done
-  * Goto /opt/rt5 and run ***'sudo sbin/rt-setup-database --action=init'*** // this will initialize the database and creates user defined in RT_SiteConfig.pm
-- Full text search is disabled in your RT configuration.  Run ***"sudo /opt/rt5/sbin/rt-setup-fulltext-index" to enable it.***
-- The application can be run with starman, that would require an extra package to install
-- `` cpanm --sudo Plack::Handler::Starman ``
-- Command to run the newly installed rt5
-- `` sudo /opt/rt5/sbin/rt-server --server Starman --port 5000 ``
+1. Initialize the database
+   - Go to /opt/rt5 and ``sudo sbin/rt-setup-database --action=init``
+   - This will initialize the database and create any user that is defined in RT_SiteConfig.pm
+1. Full text search is disabled in your RT configuration and it needs enabling
+   - ``sudo /opt/rt5/sbin/rt-setup-fulltext-index``
+1. Set a password for RT’s root user
+   - ``sudo /opt/rt5/sbin/rt-passwd root``
+1. The application can be run with starman, that would require an extra package to install
+   - `` cpanm --sudo Plack::Handler::Starman ``
+1. Command to run the newly installed rt5
+   - `` sudo /opt/rt5/sbin/rt-server --server Starman --port 5000 ``
 
 ### Method
 
