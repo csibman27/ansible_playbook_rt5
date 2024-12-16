@@ -77,12 +77,17 @@ add below code as content.
 
 ### How to run RT5
 
+1. Double check you initial config and credentials in /opt/rt5/etc/RT_SiteConfig.pm
+   - Sytax check ``perl -c /opt/rt5/etc/RT_SiteConfig.pm``
+1. Create a database user "rt"
+   - Add required permissions for the user
+   - ``GRANT ALL PRIVILEGES ON rt.* TO rt@localhost IDENTIFIED BY 'YourPassphraseHere' WITH GRANT OPTION;``
 1. Initialize the database
-   - Go to /opt/rt5 and ``sudo sbin/rt-setup-database --action=init``
-   - This will initialize the database and create any user that is defined in RT_SiteConfig.pm
+   - ``sudo /opt/rt5/sbin/rt-setup-database --action=init``
+   - This will initialize the database and creates indexes required 
 1. Full text search is disabled in your RT configuration and it needs enabling
    - ``sudo /opt/rt5/sbin/rt-setup-fulltext-index``
-1. Set a password for RT’s root user
+1. RT’s root user password can be changed with the commnad
    - ``sudo /opt/rt5/sbin/rt-passwd root``
 1. The application can be run with starman, that would require an extra package to install
    - `` cpanm --sudo Plack::Handler::Starman ``
