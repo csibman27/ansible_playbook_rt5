@@ -1,0 +1,30 @@
+---
+- src: git@gitlab-ee.tssg.org:infrastructure-group/ig_ansible_bootstrap.git
+  scm: git
+  name: ig_ansible_bootstrap 
+  version: v1.5
+
+- src: git@gitlab-ee.tssg.org:infrastructure-group/ig_addkeys.git
+  scm: git
+  name: ig_addkeys
+  version: v2.0
+
+- src: git@gitlab-ee.tssg.org:infrastructure-group/ig_chrony.git
+  scm: git
+  name: ig_chrony
+  version: v1.6
+
+- src: git@gitlab-ee.tssg.org:infrastructure-group/ig_hostname.git
+  scm: git
+  name: ig_hostname
+  version: v1.3
+
+- src: git@gitlab-ee.tssg.org:infrastructure-group/ig_logrotate.git
+  scm: git
+  name: ig_logrotate
+  version: v1.6
+
+- src: git@gitlab-ee.tssg.org:infrastructure-group/ig_add_backups_user.git
+  scm: git
+  name: ig_add_backups_user
+  version: v1.8
