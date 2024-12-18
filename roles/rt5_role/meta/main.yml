@@ -1,0 +1,25 @@
+---
+galaxy_info:
+  author: thulium_drake
+  description: Request Tracker, powered by Ansible
+  role_name: request_tracker
+
+  license: GPLv3
+
+  min_ansible_version: '2.10'
+
+  platforms:
+    - name: Debian
+      versions:
+        - buster
+        - bullseye
+    - name: EL
+      versions:
+        - '9'
+
+  galaxy_tags:
+    - requesttracker
+    - request
+    - tracker
+
+dependencies: []

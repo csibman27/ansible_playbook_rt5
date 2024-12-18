@@ -1,0 +1,166 @@
+---
+- name: 'Include OS specific vars'
+  ansible.builtin.include_vars: "{{ ansible_facts['os_family'] }}-{{ ansible_facts['distribution_major_version'] }}.yml"
+  no_log: true
+
+- name: 'RHEL-like specific tasks'
+  when:
+    - ansible_facts['os_family'] == 'RedHat'
+    - rt_setup_repos
+  block:
+    - name: 'Enable RedHat CodeReady Builder repo'
+      community.general.rhsm_repository:
+        name: "codeready-builder-for-rhel-{{ ansible_facts['distribution_major_version'] }}-x86_64-rpms"
+        state: 'enabled'
+      when: ansible_facts['distribution'] == 'RedHat'
+
+    - name: 'Ensure EPEL'
+      ansible.builtin.dnf:
+        name: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_facts['distribution_major_version'] }}.noarch.rpm"
+        state: 'present'
+        disable_gpg_check: true
+
+- name: 'Ensure dependencies'
+  ansible.builtin.package:
+    name: "{{ rt_package_dependencies }}"
+    state: 'present'
+    update_cache: true
+
+- name: 'Ensure RT5 sources'
+  ansible.builtin.git:
+    repo: 'https://github.com/bestpractical/rt'
+    version: "rt-{{ rt_version }}"
+    dest: '/root/request_tracker'
+
+- name: 'Ensure SELinux context for writable dirs'
+  community.general.sefcontext:
+    target: "/opt/rt5/{{ selinux_context['dir'] }}(/.*)?"
+    setype: "{{ selinux_context['type'] }}"
+    state: 'present'
+  loop:
+    - dir: 'var'
+      type: 'httpd_sys_content_rw_t'
+  loop_control:
+    loop_var: 'selinux_context'
+  when: ansible_facts['os_family'] == 'RedHat'
+
+- name: 'Prepare installation (1/2)'
+  ansible.builtin.shell: |
+    export PERL_MM_USE_DEFAULT=1
+    /usr/bin/cpan quit
+    cd /root/request_tracker
+    autoconf
+  changed_when: true
+
+- name: 'Prepare installation (2/2)'
+  ansible.builtin.shell: |
+    cd /root/request_tracker
+    ./configure \
+      --enable-graphviz  --enable-externalauth --enable-smime \
+      --with-attachment-store=database > /root/request_tracker_configure.log 2>&1
+  changed_when: true
+
+- name: 'Ensure CPAN dependencies (this may take a while)'
+  ansible.builtin.shell: |
+    cd /root/request_tracker
+    make fixdeps > /root/request_tracker_fixdeps.log 2>&1
+  changed_when: true
+
+- name: 'Install RT'
+  ansible.builtin.shell: |
+    cd /root/request_tracker
+    make install > /root/request_tracker_install.log 2>&1
+  changed_when: true
+
+- name: 'Ensure RT Site config'
+  ansible.builtin.template:
+    src: 'RT_SiteConfig.pm.j2'
+    dest: '/opt/rt5/etc/RT_SiteConfig.pm'
+    owner: "{{ rt_apache_user }}"
+    group: "{{ rt_apache_user }}"
+    mode: '0660'
+    validate: 'perl -c %s'
+  notify: 'Restart apache'
+  no_log: false
+
+- name: 'Ensure database semaphore file for manual DB setup'
+  ansible.builtin.file:
+    path: '/opt/rt5/ansible_db_init_done'
+    state: 'touch'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  when: rt_manual_database_setup
+
+- name: 'Initialize database'
+  ansible.builtin.shell: |
+    /opt/rt5/sbin/rt-setup-database --action init --skip-create
+    /opt/rt5/sbin/rt-setup-fulltext-index --noask --dba {{ rt_database_admin }} --dba-password {{ rt_database_admin_password }}
+    touch /opt/rt5/ansible_db_init_done
+  args:
+    creates: '/opt/rt5/ansible_db_init_done'
+  no_log: false
+
+- name: 'Set up fetchmail'
+  when: rt_setup_fetchmail
+  block:
+    - name: 'Ensure fetchmail'
+      ansible.builtin.package:
+        name: 'fetchmail'
+        state: 'present'
+
+    - name: 'Ensure fetchmailrc'
+      ansible.builtin.template:
+        src: 'fetchmailrc.j2'
+        dest: '/opt/rt5/etc/fetchmailrc'
+        owner: "{{ rt_apache_user }}"
+        group: "{{ rt_apache_user }}"
+        mode: '0600'
+
+    - name: 'Ensure logfile'
+      ansible.builtin.file:
+        path: '/var/log/rt5_fetchmail.log'
+        state: 'touch'
+        owner: "{{ rt_apache_user }}"
+        group: "{{ rt_apache_user }}"
+        mode: '0660'
+
+    - name: 'Ensure cronjob to retrieve mail'
+      ansible.builtin.cron:
+        name: 'RT - fetchmail'
+        job: '/usr/bin/fetchmail -f /opt/rt5/etc/fetchmailrc'
+        user: "{{ rt_apache_user }}"
+
+
+- name: 'Ensure RT-Shredder directory'
+  ansible.builtin.file:
+    path: '/opt/rt5/var/data/RT-Shredder'
+    state: 'directory'
+    owner: "{{ rt_apache_user }}"
+    group: "{{ rt_apache_user }}"
+    mode: '0770'
+
+- name: 'Ensure cronjob to shred deleted tickets'
+  ansible.builtin.cron:
+    name: 'RT - Shredder'
+    job: /opt/rt5/sbin/rt-shredder --plugin 'Tickets=query, Status="deleted"' --force --no-sqldump
+    user: "{{ rt_apache_user }}"
+  when: rt_autoshred_deleted_tickets
+
+- name: 'Restore SELinux contexts'
+  ansible.builtin.command: restorcon -ir /opt/rt5
+  changed_when: true
+  when: ansible_facts['os_family'] == 'RedHat'
+
+- name: 'Do manual database setup'
+  ansible.builtin.debug:
+    msg: |
+      Installation of Request Tracker is now complete and you selected manual database setup
+
+      Please import the database to the configured MySQL server now and run all
+      required steps for manual DB upgrade. This can be something like below:
+
+      == 8< ==
+      rt-setup-database --action upgrade --force --skip-create --upgrade-from x.x.x --upgrade-to {{ rt_version }}
+      == 8< ==
+  when: rt_manual_database_setup

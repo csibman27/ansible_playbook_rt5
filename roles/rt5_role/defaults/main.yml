@@ -1,0 +1,52 @@
+---
+# Version and organization name
+rt_version: '5.0.7'
+rt_organization: 'RT5'
+
+# Setup repos or do that manually
+rt_setup_repos: true
+
+# Webserver config
+rt_host_name: "{{ ansible_facts['fqdn'] }}"
+rt_host_port: 443
+
+# Timezone
+rt_timezone: 'Europe/Dublin'
+
+# Mail settings
+rt_from_address: "rt@{{ rt_organization }}"
+rt_friendly_from: true  # Show the name of the RT user sending the email instead of only the address
+
+rt_setup_fetchmail: false
+rt_fetchmail_host: "mail.{{ rt_organization }}"
+rt_fetchmail_ssl: true
+rt_fetchmail_user: "{{ rt_from_address }}"
+rt_fetchmail_folder: ''
+rt_fetchmail_password: 'ticket2mail'
+rt_fetchmail_queue: 'General'
+rt_fetchmail_rt_url: 'http://localhost'
+rt_fetchmail_verify_ssl: true
+
+# Database credentials
+rt_database_host: 'localhost'
+rt_database_port: '3306'
+rt_database_name: 'rt'
+rt_database_user: 'rt'
+rt_database_password: 'HumNMz59'
+rt_database_admin: 'root'
+rt_database_admin_password: "{{ mysql_root_password }}"
+
+# Shredder configuration
+# By default, deleting tickets will not remove them from the database
+# only from indexes and search results. If you want to destroy these tickets
+# permanently, set the below to true
+rt_autoshred_deleted_tickets: false
+
+# If you need to manually set up the RT database, enable this bool.
+# It will then skip the tasks for setting up the database, which allows
+# e.g. manual database upgrades.
+rt_manual_database_setup: false
+
+# Extra configuration to place in RT_SiteConfig.pm.
+# e.g. SLA config https://fossies.org/linux/rt/docs/customizing/sla.pod
+rt_extra_config: ''

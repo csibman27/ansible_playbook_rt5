@@ -1,0 +1,40 @@
+# {{ ansible_managed }}
+use utf8;
+
+# Instance / Organization name, also appears in email messages
+Set( $rtname, '{{ rt_organization }}');
+Set($Organization, '{{ rt_organization }}');
+
+# Service settings of the RT instance
+Set($WebDomain, '{{ rt_host_name }}');
+Set($WebPort, '{{ rt_host_port }}');
+Set($WebPath, '');
+
+# Enable webserver basic authentication
+Set($WebRemoteUserAuth, 'true');
+Set($WebRemoteUserAutocreate, 'true');
+Set($WebFallbackToRTLogin, 'true');
+
+# Database settings
+Set($DatabaseUser, '{{ rt_database_user }}');
+Set($DatabasePassword, '{{ rt_database_password }}');
+Set($DatabaseHost, '{{ rt_database_host }}');
+Set($DatabasePort, '{{ rt_database_port }}');
+Set($DatabaseName, '{{ rt_database_name }}');
+Set($DatabaseAdmin, '{{ rt_database_admin }}');
+Set( %FullTextSearch,
+   Enable     => 1,
+   Indexed    => 1,
+   Table      => 'AttachmentsIndex',
+   );
+
+# Timezone
+Set($Timezone, "{{ rt_timezone }}");
+
+# Mail settings
+Set($CorrespondAddress, '{{ rt_from_address }}');
+Set($UseFriendlyFromLine, {{ (rt_friendly_from) | ternary('1','0') }});
+
+{{ rt_extra_config }}
+
+1;
