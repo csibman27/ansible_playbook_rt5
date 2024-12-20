@@ -2,4 +2,4 @@
 - hosts: service
   become: true
   roles:
-  - rt5
+  - rt5_role
