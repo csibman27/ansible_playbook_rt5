@@ -26,9 +26,6 @@ This is an [Ansible](https://github.com/ansible/ansible) playbook. I've found th
   * sudo a2enmod mpm_prefork
   * sudo systemctl restart apache2
   
-- Red Hat/Fedora/CentOS
-  * sudo dnf install httpd
-  
 - Create a new virtual config in /etc/apache2/sites-enabled/<your_domain_name.ie.conf> and
 add below code as content.
 
@@ -77,26 +74,27 @@ add below code as content.
 
 ### How to run RT5
 
-1. Double check you initial config and credentials in /opt/rt5/etc/RT_SiteConfig.pm
+1. Double check initial config and credentials in /opt/rt5/etc/RT_SiteConfig.pm
    - Sytax check ``perl -c /opt/rt5/etc/RT_SiteConfig.pm``
 1. Create a database user "rt"
-   - Add required permissions for the user
+   - Add required db permissions for the user
    - ``GRANT ALL PRIVILEGES ON rt.* TO rt@localhost IDENTIFIED BY 'YourPassphraseHere' WITH GRANT OPTION;``
 1. Initialize the database
    - ``sudo /opt/rt5/sbin/rt-setup-database --action=init``
    - This will initialize the database and creates indexes required 
-1. Full text search is disabled in your RT configuration and it needs enabling
+1. Full text search is disabled in your RT configuration and it needs to be enabled
    - ``sudo /opt/rt5/sbin/rt-setup-fulltext-index``
 1. RT’s root user password can be changed with the commnad
    - ``sudo /opt/rt5/sbin/rt-passwd root``
 1. The application can be run with starman, that would require an extra package to install
    - `` cpanm --sudo Plack::Handler::Starman ``
-1. Command to run the newly installed rt5
-   - `` sudo /opt/rt5/sbin/rt-server --server Starman --port 5000 ``
+1. Commands to run the newly installed rt5
+   - `` sudo /opt/rt5/sbin/rt-server --server Starman --port 5000 `` or without starman
+   - `` sudo /opt/rt5/sbin/rt-server --port 5000 ``
 
 ### Method
 
-This is a playbook that contains the role so run it with the ansible command provided in run.txt
+This is an ansible playbook that contains the role so run it with the ansible command provided in run.txt
 Edit the inventory; adding the hostname or IP address of the target VM.
 Edit 'ansible.cfg' making sure you're happy with the remote user and authentication method (password, key, etc.).
 
@@ -105,9 +103,6 @@ This runs the playbook with the inventory and the ansible configuration.
 
 ## Contribution
 
-- Don't bother
-
 Tibor Molnar tibor.molnar@waltoninstitute.ie
 
-&copy; Waterford Institute of Technology 2021-07-23 
 # ansible_playbook_rt5
