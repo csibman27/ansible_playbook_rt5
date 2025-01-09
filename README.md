@@ -23,10 +23,32 @@ This is an [Ansible](https://github.com/ansible/ansible) playbook. I've found th
   * sudo apt-get install spawn-fcgi 
   
 - Create a new virtual config in /etc/nginx/sites-available/<your_domain_name.ie> and
-add below code as content.
+add below code as content or use default
 
 ```
+server {
+	listen 80 default_server;
+	listen [::]:80 default_server;
 
+        root /opt/rt5/share/html;
+       
+        access_log  /var/log/nginx/access.log;
+
+	# Add index.php to the list if you are using PHP
+	index index.html index.htm index.nginx-debian.html;
+
+	server_name helpdesk.waltoninstitute.ie;
+
+        # The location path should match the WebPath in your RT site configuration.
+        location / {
+          include /etc/nginx/fastcgi.conf;
+          # SCRIPT_NAME should match RT's WebPath, without a trailing slash.
+          # This means when WebPath is /, it's the empty string "".
+          fastcgi_param SCRIPT_NAME "";
+          # This network location should match the ListenStream in rt-server.socket.
+          fastcgi_pass localhost:5000;
+        }
+}
 
 ```
 
@@ -46,7 +68,7 @@ add below code as content.
    - ``sudo /opt/rt5/sbin/rt-passwd root``
 1. The application can be run with starman, that would require an extra package to install
    - `` cpanm --sudo Plack::Handler::Starman ``
-1. Commands to run the newly installed rt5
+1. Commands to run the newly installed rt5 (no need apache or nginx)
    - `` sudo /opt/rt5/sbin/rt-server --server Starman --port 5000 `` or without starman
    - `` sudo /opt/rt5/sbin/rt-server --port 5000 ``
 
