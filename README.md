@@ -16,6 +16,13 @@ This is an [Ansible](https://github.com/ansible/ansible) playbook. I've found th
 - Requires a preferred database to be installed, recommended is MariaDB MYSQL
 - https://rt-wiki.bestpractical.com/wiki/ManualInstallation // can provide more info about installation
 
+### RT user
+
+`` 
+sudo groupadd --system rt
+sudo useradd --system --home-dir=/opt/rt5/var --gid=rt rt
+``
+
 ### Nginx install & config
 
 - Debian 
@@ -66,6 +73,7 @@ server {
    - ``sudo /opt/rt5/sbin/rt-setup-fulltext-index``
 1. RT’s root user password can be changed with the commnad
    - ``sudo /opt/rt5/sbin/rt-passwd root``
+1. If you want to login to RT without any SSL cert in place you have to add `` Set($WebSecureCookies, 0); `` to RT_SiteConfig
 1. The application can be run with starman, that would require an extra package to install
    - `` cpanm --sudo Plack::Handler::Starman ``
 1. Commands to run the newly installed rt5 (no need apache or nginx)
