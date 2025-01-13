@@ -95,6 +95,8 @@ DocumentRoot "/opt/rt5/share/html"
       - `` sudo /opt/rt5/sbin/rt-server --server Starman --port 5000 ``
    1. Standalone without any extension:
       - `` sudo /opt/rt5/sbin/rt-server --port 5000 ``
+1. Any permission issues make sure var directory has correct owner set.
+      - `` sudo chown -R www-data:www-data /opt/rt5/var ``
 
 ### Method
 
