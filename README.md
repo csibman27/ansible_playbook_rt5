@@ -98,6 +98,9 @@ DocumentRoot "/opt/rt5/share/html"
 1. Any permission issues make sure var directory has correct owner set.
       - `` sudo chown -R www-data:www-data /opt/rt5/var ``
 
+### Plugins
+
+- https://github.com/medea61/RT-Extension-MSTeams
 ### Method
 
 This is an ansible playbook that contains the role so run it with the ansible command provided in run.txt
