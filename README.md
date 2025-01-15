@@ -100,6 +100,11 @@ DocumentRoot "/opt/rt5/share/html"
 1. Secured connection would require a cpamn plugin
       - `` sudo cpanm install Crypt::SSLeay``
 
+### Test Emails
+
+- Incoming from localhost
+  * echo 'hello' | mail -s "whaccap" rt
+
 ### Plugins
 
 - https://github.com/medea61/RT-Extension-MSTeams
