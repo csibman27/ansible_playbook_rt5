@@ -96,7 +96,9 @@ DocumentRoot "/opt/rt5/share/html"
    1. Standalone without any extension:
       - `` sudo /opt/rt5/sbin/rt-server --port 5000 ``
 1. Any permission issues make sure var directory has correct owner set.
-      - `` sudo chown -R www-data:www-data /opt/rt5/var ``
+      - `` sudo chown -R www-data:rt /opt/rt5/var ``
+1. Secured connection would require a cpamn plugin
+      - `` sudo cpanm install Crypt::SSLeay``
 
 ### Plugins
 
