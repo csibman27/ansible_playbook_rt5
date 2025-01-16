@@ -102,6 +102,7 @@ DocumentRoot "/opt/rt5/share/html"
 
 ### Test Emails
 
+- Install postfix, make sure transport and virtual files exist after removed sendmail
 - Incoming from localhost
   * echo 'hello' | mail -s "whaccap" rt
 
