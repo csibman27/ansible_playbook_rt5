@@ -4,7 +4,12 @@ The following is a playbook for test_playbook.
 
 The playbook is tested on Debian 11, Debian 12 
 
-## How to Use
+Last Install: 2025-01-15
+user: debian
+DNS: helpdesk.waltoninstitute.ie
+FYI: old helpdesk.tssg.oeg is forwarded to helpdesk.waltoninstitute.ie
+
+## How to Use this playbook
 
 This is an [Ansible](https://github.com/ansible/ansible) playbook. I've found the best results come from running on a Linux/OSX host.
 
@@ -23,7 +28,7 @@ sudo groupadd --system rt
 sudo useradd --system --home-dir=/opt/rt5/var --gid=rt rt
 ``
 
-### Nginx install & config
+### Aoache2 install & config
 
 - Debian 
   * sudo apt install apache2 libapache2-mod-fcgid
@@ -100,15 +105,16 @@ DocumentRoot "/opt/rt5/share/html"
 1. Secured connection would require a cpamn plugin
       - `` sudo cpanm install Crypt::SSLeay``
 
-### Test Emails
+### Test Emails internaly
 
 - Install postfix, make sure transport and virtual files exist after removed sendmail
 - Incoming from localhost
   * echo 'hello' | mail -s "whaccap" rt
 
-### Plugins
+### Plugins could be added
 
 - https://github.com/medea61/RT-Extension-MSTeams
+
 ### Method
 
 This is an ansible playbook that contains the role so run it with the ansible command provided in run.txt
