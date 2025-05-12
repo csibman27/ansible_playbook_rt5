@@ -32,7 +32,7 @@ rt_database_host: 'localhost'
 rt_database_port: '3306'
 rt_database_name: 'rt'
 rt_database_user: 'rt'
-rt_database_password: 'HumNMz59!!'
+rt_database_password: 'syst1m4x'
 rt_database_admin: 'root'
 rt_database_admin_password: "{{ mysql_root_password }}"
 
