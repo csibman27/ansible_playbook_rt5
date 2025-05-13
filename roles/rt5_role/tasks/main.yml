@@ -44,6 +44,12 @@
     loop_var: 'selinux_context'
   when: ansible_facts['os_family'] == 'RedHat'
 
+- name: Install Apache on Debian
+  apt:
+    name: apache2
+    state: present
+  when: ansible_os_family == 'Debian'
+
 - name: 'Prepare installation (1/2)'
   ansible.builtin.shell: |
     export PERL_MM_USE_DEFAULT=1

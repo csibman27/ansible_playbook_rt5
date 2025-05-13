@@ -1,5 +1,5 @@
 ---
-rt_apache_service: 'apache2'
+rt_apache_service: apache2
 rt_apache_user: 'www-data'
 mysql_root_password: ''
 rt_package_dependencies:

@@ -1,5 +1,19 @@
 ---
+- name: 'Debug Apache service variables'
+  ansible.builtin.debug:
+    msg: |
+      Service name: {{ rt_apache_service }}
+      OS Family: {{ ansible_os_family }}
+      Services: {{ ansible_facts.services.keys() | list }}
+
 - name: 'Restart apache'
   ansible.builtin.service:
     name: "{{ rt_apache_service }}"
     state: 'restarted'
+  register: apache_restart_result
+  ignore_errors: yes
+
+- name: 'Check restart results'
+  ansible.builtin.debug:
+    var: apache_restart_result
+  when: apache_restart_result is failed
