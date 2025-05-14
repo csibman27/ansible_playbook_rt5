@@ -18,6 +18,8 @@ rt_package_dependencies:
   - 'starlet'
   - 'w3m'
   - 'libapache2-mod-fcgid'
+  - 'libfcgi-perl'
+  - 'libfcgi-procmanager-perl'
   - 'libbusiness-hours-perl'
   - 'libapache-session-wrapper-perl'
   - 'libcgi-emulate-psgi-perl'
@@ -86,3 +88,5 @@ rt_package_dependencies:
   - 'libnet-ip-perl'
   - 'libpath-dispatcher-perl'
   - 'libregexp-ipv6-perl'
+  - 'libcrypt-ssleay-perl'
+  

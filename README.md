@@ -28,56 +28,70 @@ sudo groupadd --system rt
 sudo useradd --system --home-dir=/opt/rt5/var --gid=rt rt
 ``
 
-### Aoache2 install & config
+### Apache2 config
 
-- Debian 
-  * sudo apt install apache2 libapache2-mod-fcgid
-  * sudo a2dismod mpm_event
-  * sudo a2dismod mpm_worker
-  * sudo systemctl restart apache2
-  * sudo a2enmod mpm_prefork
-  * sudo systemctl restart apache2
  
 - /etc/apache2/apache2.conf
   ``
-  LoadModule proxy_module /usr/lib/apache2/modules/mod_proxy.so
-  LoadModule proxy_fcgi_module /usr/lib/apache2/modules/mod_proxy_fcgi.so
+  + LoadModule proxy_module /usr/lib/apache2/modules/mod_proxy.so
+  + LoadModule proxy_fcgi_module /usr/lib/apache2/modules/mod_proxy_fcgi.so
   ``      
   
-- Create a new virtual config in /etc/nginx/sites-enable/<your_domain_name.ie.conf> and
-add below code as content.
+- Create a new virtual config in /etc/apache2/sites-enabled/{domain-name}.ie.conf
 
 ```
-### Optional apache logs for RT
-# Ensure that your log rotation scripts know about these files
-# ErrorLog /opt/rt5/var/log/apache2.error
-# TransferLog /opt/rt5/var/log/apache2.access
-# LogLevel debug
+## helpdesk vhost
+<VirtualHost *:80>
+        ServerName {domain-name}
+        ServerAlias helpdesk
 
-AddDefaultCharset UTF-8
+        AddDefaultCharset UTF-8
 
-# ScriptAlias and Location should match RT's WebPath
+        # ScriptAlias and Location should match RT's WebPath
 
-# If WebPath is empty then use a single slash:
-ScriptAlias / /opt/rt5/sbin/rt-server.fcgi/
-# If WebPath is 'rt' then add that after the slash:
-# ScriptAlias /rt /opt/rt5/sbin/rt-server.fcgi/
+        # If WebPath is empty then use a single slash:
+        ScriptAlias / /opt/rt5/sbin/rt-server.fcgi/
+        # If WebPath is 'rt' then add that after the slash:
+        # ScriptAlias /rt /opt/rt5/sbin/rt-server.fcgi/
 
-DocumentRoot "/opt/rt5/share/html"
+        DocumentRoot "/opt/rt5/share/html"
+        ErrorLog /var/log/apache.log
+        CustomLog /var/log/apache-access.log combined
 
-# If WebPath is empty then use a single slash:
-<Location />
-# If WebPath is 'rt' then add that after the slash:
-# <Location /rt>
+        # If WebPath is empty then use a single slash:
+        <Location />
+        # If WebPath is 'rt' then add that after the slash:
+        # <Location /rt>
 
-    Require all granted
-    Options +ExecCGI
-    AddHandler fcgid-script fcgi
-</Location>
+            Require all granted
+            Options +ExecCGI
+            AddHandler fcgid-script fcgi
+        </Location>
+
+</VirtualHost>
 
 ```
 
-### How to run RT5
+- Debian 
+
+  * sudo a2dismod mpm_event
+  * sudo a2dismod mpm_worker
+  * sudo a2enmod mpm_prefork
+  * sudo a2enmod fcgid
+  * systemctl restart apache2
+
+### Install DB
+
++ sudo apt update
++ sudo apt install mariadb-server
++ sudo mysql_secure_installation
+
++ sudo mysq -u root -p
+
++ You do not need to create db and user manually RT will do it for you;
++ GRANT ALL PRIVILEGES ON rt.* TO rt@localhost IDENTIFIED BY 'YourPassphraseHere' WITH GRANT OPTION;
+
+### How to run RT5 first time
 
 1. Double check initial config and credentials in /opt/rt5/etc/RT_SiteConfig.pm
    - Sytax check ``perl -c /opt/rt5/etc/RT_SiteConfig.pm``
@@ -89,6 +103,7 @@ DocumentRoot "/opt/rt5/share/html"
    - This will initialize the database and creates indexes required 
 1. Full text search is disabled in your RT configuration and it needs to be enabled
    - ``sudo /opt/rt5/sbin/rt-setup-fulltext-index``
+1. **AT THIS STAGE YOU HAVE RT RUNNING! MAKE SURE YOU CAN CONFIRM THAT, ELSE GO BACK IN DOCS**
 1. RT’s root user password can be changed with the commnad
    - ``sudo /opt/rt5/sbin/rt-passwd root``
 1. Login to RT without any SSL cert required the following code in place  `` Set($WebSecureCookies, 0); `` to RT_SiteConfig
@@ -102,14 +117,12 @@ DocumentRoot "/opt/rt5/share/html"
       - `` sudo /opt/rt5/sbin/rt-server --port 5000 ``
 1. Any permission issues make sure var directory has correct owner set.
       - `` sudo chown -R www-data:rt /opt/rt5/var ``
-1. Secured connection would require a cpamn plugin
-      - `` sudo cpanm install Crypt::SSLeay``
 
 ### Test Emails internaly
 
 - Install postfix, make sure transport and virtual files exist after removed sendmail
 - Incoming from localhost
-  * echo 'hello' | mail -s "whaccap" rt
+  * echo 'hello' | mail -s "whassup" rt
 
 ### Plugins could be added
 
