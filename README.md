@@ -117,6 +117,7 @@ sudo useradd --system --home-dir=/opt/rt5/var --gid=rt rt
       - `` sudo /opt/rt5/sbin/rt-server --port 5000 ``
 1. Any permission issues make sure var directory has correct owner set.
       - `` sudo chown -R www-data:rt /opt/rt5/var ``
+1. ROOT login - reset password /opt/rt5/sbin/rt-passwd root
 
 ### Test Emails internaly
 
