@@ -52,25 +52,25 @@
 
 - name: Disable mpm_event module
   command: a2dismod mpm_event
-  notify: Restart Apache
+  notify: Restart apache
   register: disable_event
   changed_when: "'Module mpm_event disabled' in disable_event.stdout"
 
 - name: Disable mpm_worker module
   command: a2dismod mpm_worker
-  notify: Restart Apache
+  notify: Restart apache
   register: disable_worker
   changed_when: "'Module mpm_worker disabled' in disable_worker.stdout"
 
 - name: Enable mpm_prefork module
   command: a2enmod mpm_prefork
-  notify: Restart Apache
+  notify: Restart apache
   register: enable_prefork
   changed_when: "'Module mpm_prefork enabled' in enable_prefork.stdout"
 
 - name: Enable fcgid module
   command: a2enmod fcgid
-  notify: Restart Apache
+  notify: Restart apache
   register: enable_fcgid
   changed_when: "'Module fcgid enabled' in enable_fcgid.stdout"
 
