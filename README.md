@@ -86,7 +86,7 @@ sudo useradd --system --home-dir=/opt/rt5/var --gid=rt rt
 + sudo apt install mariadb-server
 + sudo mysql_secure_installation
 
-+ sudo mysq -u root -p
++ sudo mysql -u root -p
 
 + You do not need to create db and user manually RT will do it for you;
 + GRANT ALL PRIVILEGES ON rt.* TO rt@localhost IDENTIFIED BY 'YourPassphraseHere' WITH GRANT OPTION;
